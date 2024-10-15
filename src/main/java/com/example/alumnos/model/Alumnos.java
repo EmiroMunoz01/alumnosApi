@@ -19,16 +19,16 @@ public class Alumnos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private int id;
-    
+
     private String name;
 
     @NotEmpty(message = "The username is requiered")
-    @Column(name="username", unique=true)
+    @Column(name = "username", unique = true)
     private String username;
 
     @NotNull
     @NotEmpty(message = "The email is requiered")
-    @Column(name="email", unique=true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @NotNull
@@ -44,6 +44,9 @@ public class Alumnos {
         this.username = username;
         this.password = password;
     }
+
+  
+    
 
     public int getId() {
         return this.id;

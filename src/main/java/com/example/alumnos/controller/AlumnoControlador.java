@@ -3,6 +3,8 @@ package com.example.alumnos.controller;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,21 +27,26 @@ public class AlumnoControlador {
     // Obtener alumno
     @GetMapping({ "", "/" })
     public ResponseEntity<List<Alumnos>> getAll() {
-        //return repository.findAll();
+        // return repository.findAll();
         return ResponseEntity.ok(repository.findAll());
     }
 
     // Crear Alumno
     @PostMapping("/crear")
-    public Alumnos crearAlumnos(
+    public ResponseEntity<?> crearAlumnos(
             @RequestBody AlumnoDTO alumnoDTO) {
 
-        Alumnos alumno = new Alumnos();
-        alumno.setName(alumnoDTO.getName());
-        alumno.setEmail(alumnoDTO.getEmail());
-        alumno.setPassword(alumnoDTO.getPassword());
-        alumno.setUsername(alumnoDTO.getUsername());
-        return repository.save(alumno);
+        try {
+            Alumnos alumno = new Alumnos();
+            alumno.setName(alumnoDTO.getName());
+            alumno.setEmail(alumnoDTO.getEmail());
+            alumno.setPassword(alumnoDTO.getPassword());
+            alumno.setUsername(alumnoDTO.getUsername());
+            // return repository.save(alumno);
+            return ResponseEntity.ok(repository.save(alumno));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al intentar crear un cliente");
+        }
 
     }
 
@@ -55,10 +62,24 @@ public class AlumnoControlador {
         }
     }
 
-    // Buscar Alumno por ID
-    @GetMapping("/{id}")
-    public Optional<Alumnos> findById(@PathVariable Integer id) {
-        return repository.findById(id);
+    // Buscar Alumno por username
+    @GetMapping("/{username}")
+    public ResponseEntity<?> findByUsername(@PathVariable String username) {
+
+        // Alumnos appAlumnos = repository.findByUsername(username).get();
+        // if (appAlumnos == findByUsername(username)) {
+        // return ResponseEntity.ok(repository.findByUsername(username));
+        // } else {
+        // return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        // .body("Cliente no encontrado por el username: " + username);
+        // }
+        try {
+            Alumnos alumno = repository.findByUsername(username).get();
+            return ResponseEntity.ok(repository.findByUsername(username));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Alumno no encontrado por el username: " + username);
+        }
     }
 
 }
